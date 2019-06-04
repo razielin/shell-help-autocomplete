@@ -9,6 +9,26 @@ import (
 
 var _ = Describe("ShellHelpAutocomplete", func() {
 	emptyArg := Arg{}
+	Describe("parseArgs", func() {
+		var emptyArgArray []Arg
+		It("returns empty array if input is empty", func() {
+			Expect(parseArgs("")).To(Equal(emptyArgArray))
+		})
+		It("returns empty array if input has no args", func() {
+			Expect(parseArgs(`irrelevant text
+				- some other line
+			another-line`)).To(Equal(emptyArgArray))
+		})
+		It("should parse a single arg in a line", func() {
+			Expect(parseArgs("-v    Print version")).To(HaveLen(1))
+		})
+		It("should parse multiple arg in multiple lines", func() {
+			Expect(parseArgs(`-v    Print version
+
+-g  -g opt
+irrelevant - text`)).To(HaveLen(2))
+		})
+	})
 	Describe("parseArgLine", func() {
 		Context("in case of invalid input without args", func() {
 			It("if string is empty", func() {
@@ -71,6 +91,19 @@ func parseArgLine(line string) Arg {
 	}
 
 	return Arg{}
+}
+
+func parseArgs(input string) []Arg {
+	var res []Arg
+	emptyArg := Arg{}
+	lines := s.Split(input, "\n")
+	for _, line := range lines {
+		arg := parseArgLine(line)
+		if arg != emptyArg {
+			res = append(res, arg)
+		}
+	}
+	return res
 }
 
 type Arg struct {
