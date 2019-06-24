@@ -1,6 +1,7 @@
 package shell_help_autocomplete_test
 
 import (
+	"github.com/kusabashira/acgen"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"regexp"
@@ -60,6 +61,17 @@ irrelevant - text`)).To(HaveLen(2))
 	})
 
 })
+
+func mapToFlag(arg Arg) acgen.Flag {
+	flag := acgen.Flag{Description: arg.description, Arg: arg.description}
+	if arg.shortArg != "" {
+		flag.Short = append(flag.Short, arg.shortArg)
+	}
+	if arg.longArg != "" {
+		flag.Long = append(flag.Long, arg.longArg)
+	}
+	return flag
+}
 
 func expectLineToEqual(line string, arg *Arg) {
 	Expect(parseArgLine(line)).To(Equal(arg))
