@@ -8,7 +8,6 @@ import (
 )
 
 var _ = Describe("ShellHelpAutocomplete", func() {
-	emptyArg := Arg{}
 	Describe("parseArgs", func() {
 		It("returns empty array if input is empty", func() {
 			Expect(parseArgs("")).To(HaveLen(0))
@@ -31,28 +30,28 @@ irrelevant - text`)).To(HaveLen(2))
 	Describe("parseArgLine", func() {
 		Context("in case of invalid input without args", func() {
 			It("if string is empty", func() {
-				expectLineToEqual("", emptyArg)
+				expectLineToEqual("", nil)
 
 			})
 			It("if string does not contain a valid arg", func() {
-				expectLineToEqual("some irrelevant - text", emptyArg)
+				expectLineToEqual("some irrelevant - text", nil)
 			})
 		})
 
 		Context("in case of valid input which", func() {
 			It("has string containing short arg and description", func() {
-				expectLineToEqual("-s    a short arg", Arg{shortArg: "-s", description: "a short arg"})
+				expectLineToEqual("-s    a short arg", &Arg{shortArg: "-s", description: "a short arg"})
 			})
 			It("has string containing long arg and description", func() {
-				expectLineToEqual("--long a long arg", Arg{longArg: "--long", description: "a long arg"})
+				expectLineToEqual("--long a long arg", &Arg{longArg: "--long", description: "a long arg"})
 			})
 			It("has string containing both short and long arg and description", func() {
-				expectLineToEqual("-s, --long short and long arg", Arg{
+				expectLineToEqual("-s, --long short and long arg", &Arg{
 					shortArg: "-s", longArg: "--long", description: "short and long arg",
 				})
 			})
 			It("has string containing both short and long arg and description with hyphen", func() {
-				expectLineToEqual("-s, --long - 1 short and 1 long - the arg", Arg{
+				expectLineToEqual("-s, --long - 1 short and 1 long - the arg", &Arg{
 					shortArg: "-s", longArg: "--long", description: "1 short and 1 long - the arg",
 				})
 			})
@@ -62,19 +61,19 @@ irrelevant - text`)).To(HaveLen(2))
 
 })
 
-func expectLineToEqual(line string, arg Arg) {
+func expectLineToEqual(line string, arg *Arg) {
 	Expect(parseArgLine(line)).To(Equal(arg))
 }
 
-func parseArgLine(line string) Arg {
+func parseArgLine(line string) *Arg {
 	line = s.TrimSpace(line)
 	if !s.HasPrefix(line, "-") {
-		return Arg{}
+		return nil
 	}
 	shortArg := regexp.MustCompile(`^-\w+`).FindString(line)
 	longArg := regexp.MustCompile(`--\w+`).FindString(line)
 	if shortArg == "" && longArg == "" {
-		return Arg{}
+		return nil
 	}
 
 	description := line
@@ -91,20 +90,19 @@ func parseArgLine(line string) Arg {
 		if longArg != "" {
 			arg.longArg = longArg
 		}
-		return arg
+		return &arg
 	}
 
-	return Arg{}
+	return nil
 }
 
 func parseArgs(input string) []Arg {
 	var res []Arg
-	emptyArg := Arg{}
 	lines := s.Split(input, "\n")
 	for _, line := range lines {
 		arg := parseArgLine(line)
-		if arg != emptyArg {
-			res = append(res, arg)
+		if arg != nil {
+			res = append(res, *arg)
 		}
 	}
 	return res
