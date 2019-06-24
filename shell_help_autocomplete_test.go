@@ -10,14 +10,13 @@ import (
 var _ = Describe("ShellHelpAutocomplete", func() {
 	emptyArg := Arg{}
 	Describe("parseArgs", func() {
-		var emptyArgArray []Arg
 		It("returns empty array if input is empty", func() {
-			Expect(parseArgs("")).To(Equal(emptyArgArray))
+			Expect(parseArgs("")).To(HaveLen(0))
 		})
 		It("returns empty array if input has no args", func() {
 			Expect(parseArgs(`irrelevant text
 				- some other line
-			another-line`)).To(Equal(emptyArgArray))
+			another-line`)).To(HaveLen(0))
 		})
 		It("should parse a single arg in a line", func() {
 			Expect(parseArgs("-v    Print version")).To(HaveLen(1))
