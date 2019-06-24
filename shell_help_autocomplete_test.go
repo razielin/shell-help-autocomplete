@@ -32,35 +32,40 @@ irrelevant - text`)).To(HaveLen(2))
 	Describe("parseArgLine", func() {
 		Context("in case of invalid input without args", func() {
 			It("if string is empty", func() {
-				Expect(parseArgLine("")).To(Equal(emptyArg))
+				expectLineToEqual("", emptyArg)
+
 			})
 			It("if string does not contain a valid arg", func() {
-				Expect(parseArgLine("some irrelevant - text")).To(Equal(emptyArg))
+				expectLineToEqual("some irrelevant - text", emptyArg)
 			})
 		})
 
 		Context("in case of valid input which", func() {
 			It("has string containing short arg and description", func() {
-				Expect(parseArgLine("-s    a short arg")).To(Equal(Arg{shortArg: "-s", description: "a short arg"}))
+				expectLineToEqual("-s    a short arg", Arg{shortArg: "-s", description: "a short arg"})
 			})
 			It("has string containing long arg and description", func() {
-				Expect(parseArgLine("--long a long arg")).To(Equal(Arg{longArg: "--long", description: "a long arg"}))
+				expectLineToEqual("--long a long arg", Arg{longArg: "--long", description: "a long arg"})
 			})
 			It("has string containing both short and long arg and description", func() {
-				Expect(parseArgLine("-s, --long short and long arg")).To(Equal(Arg{
+				expectLineToEqual("-s, --long short and long arg", Arg{
 					shortArg: "-s", longArg: "--long", description: "short and long arg",
-				}))
+				})
 			})
 			It("has string containing both short and long arg and description with hyphen", func() {
-				Expect(parseArgLine("-s, --long - 1 short and 1 long - the arg")).To(Equal(Arg{
+				expectLineToEqual("-s, --long - 1 short and 1 long - the arg", Arg{
 					shortArg: "-s", longArg: "--long", description: "1 short and 1 long - the arg",
-				}))
+				})
 			})
 		})
 
 	})
 
 })
+
+func expectLineToEqual(line string, arg Arg) {
+	Expect(parseArgLine(line)).To(Equal(arg))
+}
 
 func parseArgLine(line string) Arg {
 	line = s.TrimSpace(line)
