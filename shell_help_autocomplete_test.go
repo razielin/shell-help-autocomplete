@@ -1,4 +1,4 @@
-package shell_help_autocomplete_test
+package main_test
 
 import (
 	"github.com/kusabashira/acgen"
