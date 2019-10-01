@@ -6,11 +6,12 @@ import (
 	s "strings"
 )
 
-func ParseArgsFromString(input string) []acgen.Flag {
-	var res []acgen.Flag
+func ParseArgsFromString(input string) []*acgen.Flag {
+	var res []*acgen.Flag
 	args := parseArgs(input)
 	for _, arg := range args {
-		res = append(res, mapToFlag(arg))
+		flag := mapToFlag(arg)
+		res = append(res, &flag)
 	}
 	return res
 }
