@@ -59,6 +59,19 @@ irrelevant - text`)).To(HaveLen(2))
 		})
 
 	})
+	Describe("mapToFlag", func() {
+		It("should map Arg to acgen.Flag", func() {
+			arg := Arg{
+				description: "desc",
+				longArg:     "--desc",
+				shortArg:    "-d",
+			}
+			flag := mapToFlag(arg)
+			Expect(flag.Description).To(Equal(arg.description))
+			Expect(flag.Long[0]).To(Equal(arg.longArg))
+			Expect(flag.Short[0]).To(Equal(arg.shortArg))
+		})
+	})
 
 })
 
