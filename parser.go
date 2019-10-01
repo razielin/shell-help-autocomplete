@@ -6,6 +6,15 @@ import (
 	s "strings"
 )
 
+func ParseArgsFromString(input string) []acgen.Flag {
+	var res []acgen.Flag
+	args := parseArgs(input)
+	for _, arg := range args {
+		res = append(res, mapToFlag(arg))
+	}
+	return res
+}
+
 func parseArgs(input string) []Arg {
 	var res []Arg
 	lines := s.Split(input, "\n")
