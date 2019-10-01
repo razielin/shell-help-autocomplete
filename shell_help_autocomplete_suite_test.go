@@ -1,4 +1,4 @@
-package main_test
+package shell_help_autocomplete_test
 
 import (
 	. "github.com/onsi/ginkgo"
